@@ -12,8 +12,3 @@ class Solution(object):
                 return [tnums[t], i]
             else:
                 tnums.update({nums[i]: i})
-
-if __name__ == '__main__':
-    solution = Solution()
-    r = solution.twoSum([1, 2, 3], 3)
-    print r
