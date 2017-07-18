@@ -7,7 +7,10 @@ class Solution(object):
         :rtype: str
         """
         searched = []
-        palindromes = []
+        palindrome = ''
+
+        if len(s) == 1 or self.isPalindrome(s):
+            return s
 
         for i in range(0, len(s)):
             if s[i] in searched:
@@ -17,36 +20,24 @@ class Solution(object):
             p1 = format(r'%s' % a1)
             chars = list(re.finditer(p1, s))
             chars = map(lambda x: x.start(), chars)
-            l = self.makeRange(chars)
-            l = map(lambda x: [x[0], x[1] + 1], l)
-            for p in l:
-                if self.isPalindrome(s[p[0]: p[1]]) and s[p[0]: p[1]]:
-                    palindromes.append(s[p[0]: p[1]])
 
-        palindromes = list(set(palindromes))
+            if len(chars) == 1:
+                palindrome = a1 if len(a1) > len(palindrome) else palindrome
+                continue
 
-        ml = max(len(pa) for pa in palindromes)
-        longestPalindrome = list(lpa for lpa in palindromes if len(lpa) == ml)[0]
+            hasPalindrome = False
+            for l in range(len(chars), 0, -1):
+                for i in range(0, len(chars) - l):
+                    substr = s[chars[i]: chars[i + l] + 1]
+                    if len(substr) <= len(palindrome):
+                        continue
+                    elif self.isPalindrome(substr):
+                        palindrome = substr
+                        hasPalindrome = True
+                if hasPalindrome:
+                    break
 
-        return longestPalindrome
-
-    def makeRange(self, l):
-        """
-        :type l: list
-        :rtype: list
-        """
-        col = []
-        l = list(set(l))
-        l.sort()
-        if not l:
-            return []
-        if len(l) == 1:
-            return [[l[0], l[0]]]
-        for i in range(0, len(l) - 1):
-           for j in range(i + 1, len(l)):
-               col.append([l[i], l[j]])
-        return col
-
+        return palindrome
 
     def isPalindrome(self, s):
         """
