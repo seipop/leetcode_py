@@ -1,54 +1,47 @@
-import re
-
 class Solution(object):
+    def __init__(self):
+        self.maxLen = 0
+        self.startPosition = 0
+
     def longestPalindrome(self, s):
         """
         :type s: str
         :rtype: str
         """
-        searched = []
-        palindrome = ''
-
-        if len(s) == 1 or self.isPalindrome(s):
-            return s
-
         for i in range(0, len(s)):
-            if s[i] in searched:
-                continue
-            a1 = s[i]
-            searched += a1
-            p1 = format(r'%s' % a1)
-            chars = list(re.finditer(p1, s))
-            chars = map(lambda x: x.start(), chars)
+            self.findPalindrome(s, i, i)
+            self.findPalindrome(s, i, i + 1)
 
-            if len(chars) == 1:
-                palindrome = a1 if len(a1) > len(palindrome) else palindrome
-                continue
+        palindrome = s[self.startPosition: self.startPosition + self.maxLen]
 
-            hasPalindrome = False
-            for l in range(len(chars), 0, -1):
-                for i in range(0, len(chars) - l):
-                    substr = s[chars[i]: chars[i + l] + 1]
-                    if len(substr) <= len(palindrome):
-                        continue
-                    elif self.isPalindrome(substr):
-                        palindrome = substr
-                        hasPalindrome = True
-                if hasPalindrome:
-                    break
+        self.startPosition = 0
+        self.maxLen = 0
 
         return palindrome
 
-    def isPalindrome(self, s):
+
+    def findPalindrome(self, s, left, right):
         """
         :type s: str
+        :type center: int
+        :type lift: int
+        :type right: int
         :rtype: boolean
         """
-        isPalindrome = True
-        if not s:
-            pass
-        elif s[0] == s[-1]:
-            isPalindrome = isPalindrome and self.isPalindrome(s[1:-1])
+        flag = False
+        while left >= 0 and right < len(s) and (s[left] == s[right]):
+            left -= 1
+            right += 1
+            flag = True
+
+        if flag:
+            left += 1
+            right -= 1
         else:
-            isPalindrome = False
-        return isPalindrome
+            right -= 1
+
+        if self.maxLen <= (right - left + 1):
+            self.maxLen = right - left + 1
+            self.startPosition = left
+
+        return [left, right]
